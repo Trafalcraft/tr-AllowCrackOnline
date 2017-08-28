@@ -1,0 +1,8 @@
+# MySQL details
+database:
+  host: 127.0.0.1
+  port: 3306
+  user: user
+  pass: password
+  db: allowCrackOnline
+  prefix: aco_
