@@ -6,3 +6,37 @@ database:
   pass: password
   db: allowCrackOnline
   prefix: aco_
+
+Settings:
+  authServer: "login"
+  mainServer: "lobby"
+
+msg:
+  base:
+    prefix: "§9[§3tr-AllowCrackOnline§9]> §2"
+    error: "§9[§4tr-AllowCrackOnline§9]> §c"
+    no_permissions: "§4ERROR §9§l> §r§bYou don't have permission to do that!"
+    command_use: "§9[§4tr-AllowCrackOnline§9]> §r§cCommand use: §6$command"
+  info:
+    notAllowedCrackedUser: "Invalid username. Hacking?"
+    pluginDisableKickMsg: "You have been disconnected \n Proxy restarting"
+  userCommands:
+    wrongPassword: "Wrong password"
+    playerNotRegister: "You are not register"
+    registerHelp: "Do /register <password> <password>"
+    registerPasswordNotMatch: "The password not match"
+    registerSuccess: "§aYou have been register"
+    changePasswordHelp: "Do /changemdp <old password>"
+    changePasswordRightPassword: "Your password is good"
+    loginHelp: "Do /login <password>"
+    loginRightPassword: "§aThis is the good password \n Good game"
+  adminCommands:
+    pluginDisable: "The plugin is now disable !"
+    pluginEnable: "The plugin is now enable !"
+    playerAddedToAllowedCrackedList: "$player is now allowed to used a no-official version"
+    playerRemovedFromAllowedCrackedList: "$player is no longer allowed to used a no-official version"
+    listAllowedPlayers: "The allowed player are : "
+  invalidPlayer:
+    tooLongPassword: "$player have a too long name"
+    invalidCharacter: "$player contain an invalid character"
+    successfulConnection: "The player $player is connected in cracked version"

@@ -1,10 +1,4 @@
-name: AllowOnlineModeCrack
-version: 0.0.2
+name: tr-AllowCrackOnline
+version: 0.0.3
 main: com.trafalcraft.allowCrackOnline.Main
 author: Amosar
-website: http://www.trafalcraft.com
-#commands:
-#    alwaysonline:
-#        description: Base command for always online.
-#        usage: /alwaysonline
-#        aliases: [ao]
