@@ -32,7 +32,6 @@ public class ACCommand extends Command {
                                         sender.sendMessage(TextComponent.fromLegacyText(ChatColor.GOLD
                                                 + Msg.PREFIX.toString() + Msg.PLUGIN_DISABLE));
                                         break;
-                                //active le plugin
                                 case "enable":
                                         Main.setDisable(false);
                                         sender.sendMessage(

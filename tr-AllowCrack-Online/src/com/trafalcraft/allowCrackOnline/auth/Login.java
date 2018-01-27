@@ -43,8 +43,7 @@ public class Login extends Command {
                                                 byte[] messageDigest = md.digest(passBytes);
                                                 BigInteger number = new BigInteger(1, messageDigest);
                                                 String code = number.toString(16);
-                                                if (code.equals(playerCache
-                                                        .getPass())) {
+                                                if (code.equals(playerCache.getPass())) {
                                                         sender.sendMessage(TextComponent.fromLegacyText(
                                                                 Msg.PREFIX.toString() + Msg.LOGIN_RIGHT_PASSWORD));
                                                         ServerInfo target = ProxyServer.getInstance()

@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.util.regex.Pattern;
 
 public class ACListener implements Listener {
-        private final Pattern pat = Pattern.compile("^[a-zA-Z0-9_]{2,16}$");
+        private final Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]{2,16}$");
         private final Main main;
         private final String kick_invalid_name;
 
@@ -121,23 +121,23 @@ public class ACListener implements Listener {
         public void onPlayerLeave(PlayerDisconnectEvent pde) {
                 final ProxiedPlayer player = pde.getPlayer();
                 if (Main.getManageCache().contains(player.getName())) {
-                        Main.getManageCache().getPlayerCache(player.getName())
-                                .setLastIP(player.getAddress().getAddress().toString());
+                        PlayerCache playerCache = Main.getManageCache().getPlayerCache(player.getName());
+                        playerCache.setLastIP(player.getAddress().getAddress().toString());
                         ServerInfo target = ProxyServer.getInstance().getServerInfo("Settings.authServer");
                         player.setReconnectServer(target);
                         Main.getInstance().getProxy().getScheduler().runAsync(Main.getPlugin(), () -> {
                                 try {
                                         PreparedStatement st = Main.getDatabase().prepareStatement("");
-                                        if (Main.getManageCache().getPlayerCache(player.getName()).getPass() != null) {
+                                        if (playerCache.getPass() != null) {
                                                 st = Main.getDatabase().prepareStatement("UPDATE `"
                                                         + Main.getConfig().get("database.prefix")
                                                         + "users` SET `pass` = '"
-                                                        + Main.getManageCache().getPlayerCache(player.getName())
+                                                        + playerCache
                                                         .getPass()
                                                         + "' WHERE `name` = '" + player.getName() + "';");
                                                 st.executeUpdate();
                                         }
-                                        if (Main.getManageCache().getPlayerCache(player.getName()).getLastIP()
+                                        if (playerCache.getLastIP()
                                                 != null) {
                                                 st = Main.getDatabase().prepareStatement("UPDATE `"
                                                         + Main.getConfig().get("database.prefix")
@@ -146,12 +146,12 @@ public class ACListener implements Listener {
                                                         + "' WHERE `name` = '" + player.getName() + "' ;");
                                                 st.executeUpdate();
                                         }
-                                        if (Main.getManageCache().getPlayerCache(player.getName()).getLastAuth()
+                                        if (playerCache.getLastAuth()
                                                 != null) {
                                                 st = Main.getDatabase().prepareStatement("UPDATE `"
                                                         + Main.getConfig().get("database.prefix")
                                                         + "users` SET `lastAUth` = '"
-                                                        + Main.getManageCache().getPlayerCache(player.getName())
+                                                        + playerCache
                                                         .getLastAuth()
                                                         + "' WHERE `name` = '" + player.getName() + "' ;");
                                                 st.executeUpdate();
@@ -165,7 +165,7 @@ public class ACListener implements Listener {
         }
 
         public boolean validate(String username) {
-                return (username != null) && (this.pat.matcher(username).matches());
+                return (username != null) && (this.pattern.matcher(username).matches());
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)

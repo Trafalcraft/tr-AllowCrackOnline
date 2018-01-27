@@ -14,6 +14,8 @@ public enum Msg {
 
         NOT_ALLOWED_CRACKED_USER("Invalid username. Hacking?"),
         PLUGIN_DISABLE_KICK_MSG("You have been disconnected \n Proxy restarting"),
+        SUCCESSFUL_CONNECTION("The player $player is connected in cracked version"),
+        AUTH_SERVER_DOWN("The authenticator server is down.\n Please tell the server administrator"),
 
         WRONG_PASSWORD("Wrong password"),
         PLAYER_NOT_REGISTER("You are not register"),
@@ -33,9 +35,7 @@ public enum Msg {
         LIST_ALLOWED_PLAYERS("The allowed player are : "),
 
         TOO_LONG_PASSWORD("$player have a too long name"),
-        INVALID_CHARACTER("$player contain an invalid character"),
-        SUCCESSFUL_CONNECTION("The player $player is connected in cracked version"),
-        AUTH_SERVER_DOWN("The authentificator server is down.\n Please tell server administrator");
+        INVALID_CHARACTER("$player contain an invalid character");
 
         private String value;
 
@@ -76,6 +76,8 @@ public enum Msg {
 
                 Msg.NOT_ALLOWED_CRACKED_USER.replaceBy("msg.info.notAllowedCrackedUser");
                 Msg.PLUGIN_DISABLE_KICK_MSG.replaceBy("msg.info.pluginDisableKickMsg");
+                Msg.SUCCESSFUL_CONNECTION.replaceBy("msg.info.successfulConnection");
+                Msg.AUTH_SERVER_DOWN.replaceBy("msg.info.authServerDown");
 
                 Msg.WRONG_PASSWORD.replaceBy("msg.userCommands.wrongPassword");
                 Msg.PLAYER_NOT_REGISTER.replaceBy("msg.userCommands.playerNotRegister");
@@ -97,7 +99,6 @@ public enum Msg {
 
                 Msg.TOO_LONG_PASSWORD.replaceBy("msg.invalidPlayer.tooLongPassword");
                 Msg.INVALID_CHARACTER.replaceBy("msg.invalidPlayer.invalidCharacter");
-                Msg.SUCCESSFUL_CONNECTION.replaceBy("msg.invalidPlayer.successfulConnection");
         }
 
         public String toString() {

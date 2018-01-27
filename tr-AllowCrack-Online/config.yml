@@ -20,6 +20,8 @@ msg:
   info:
     notAllowedCrackedUser: "Invalid username. Hacking?"
     pluginDisableKickMsg: "You have been disconnected \n Proxy restarting"
+    successfulConnection: "The player $player is connected in cracked version"
+    authServerDown: "The authenticator server is down. \n sPlease tell the server administrator"
   userCommands:
     wrongPassword: "Wrong password"
     playerAlreadyRegister: "You are already register"
@@ -40,4 +42,3 @@ msg:
   invalidPlayer:
     tooLongPassword: "$player have a too long name"
     invalidCharacter: "$player contain an invalid character"
-    successfulConnection: "The player $player is connected in cracked version"

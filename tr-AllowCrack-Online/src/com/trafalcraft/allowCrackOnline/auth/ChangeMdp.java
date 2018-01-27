@@ -1,6 +1,7 @@
 package com.trafalcraft.allowCrackOnline.auth;
 
 import com.trafalcraft.allowCrackOnline.Main;
+import com.trafalcraft.allowCrackOnline.cache.PlayerCache;
 import com.trafalcraft.allowCrackOnline.util.Msg;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -19,7 +20,8 @@ public class ChangeMdp extends Command {
         @Override
         public void execute(CommandSender sender, String[] args) {
                 if (Main.getManageCache().contains(sender.getName())) {
-                        if (Main.getManageCache().getPlayerCache(sender.getName()).getPass() == null) {
+                        PlayerCache playerCache = Main.getManageCache().getPlayerCache(sender.getName());
+                        if (playerCache.getPass() == null) {
                                 sender.sendMessage(
                                         TextComponent.fromLegacyText(Msg.ERROR.toString() + Msg.PLAYER_NOT_REGISTER));
                         } else if (args.length <= 0) {
@@ -35,9 +37,8 @@ public class ChangeMdp extends Command {
                                         byte[] messageDigest = md.digest(passBytes);
                                         BigInteger number = new BigInteger(1, messageDigest);
                                         String code = number.toString(16);
-                                        if (code.equals(Main.getManageCache().getPlayerCache(sender.getName())
-                                                .getPass())) {
-                                                Main.getManageCache().getPlayerCache(sender.getName()).setPass(null);
+                                        if (code.equals(playerCache.getPass())) {
+                                                playerCache.setPass(null);
                                                 sender.sendMessage(TextComponent.fromLegacyText(Msg.PREFIX.toString()
                                                         + Msg.CHANGE_PASSWORD_RIGHT_PASSWORD + "\n"
                                                         + Msg.REGISTER_HELP));

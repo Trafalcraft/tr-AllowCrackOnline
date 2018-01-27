@@ -27,13 +27,13 @@ public class Main extends Plugin {
         private static Configuration config;
         private static Plugin plugin;
         private static DatabaseManager manager;
-        private static ManageCache manageCachec;
+        private static ManageCache manageCache;
         private boolean disabled = false;
 
         public void onEnable() {
                 instance = this;
                 plugin = this;
-                manageCachec = new ManageCache();
+                manageCache = new ManageCache();
 
                 // loadConfig config
                 if (!getDataFolder().exists())
@@ -81,7 +81,7 @@ public class Main extends Plugin {
                                 if (rs.getInt(1) > 0) {
                                         for (int i = 0; i < rs.getInt(1); i++) {
                                                 rs2.next();
-                                                manageCachec.addPlayerCache(rs2.getString(1), rs2.getString(2),
+                                                manageCache.addPlayerCache(rs2.getString(1), rs2.getString(2),
                                                         rs2.getString(3),
                                                         rs2.getString(4));
                                         }
@@ -158,6 +158,6 @@ public class Main extends Plugin {
         }
 
         public static ManageCache getManageCache() {
-                return manageCachec;
+                return manageCache;
         }
 }
