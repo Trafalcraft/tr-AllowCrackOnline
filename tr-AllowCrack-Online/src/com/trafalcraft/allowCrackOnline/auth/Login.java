@@ -1,6 +1,7 @@
 package com.trafalcraft.allowCrackOnline.auth;
 
 import com.trafalcraft.allowCrackOnline.Main;
+import com.trafalcraft.allowCrackOnline.cache.PlayerCache;
 import com.trafalcraft.allowCrackOnline.util.Msg;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -22,41 +23,47 @@ public class Login extends Command {
         @Override
         public void execute(CommandSender sender, String[] args) {
                 if (Main.getManageCache().contains(sender.getName())) {
-                        if (Main.getManageCache().getPlayerCache(sender.getName()).getPass() == null) {
-                                sender.sendMessage(
-                                        TextComponent.fromLegacyText(Msg.ERROR.toString() + Msg.PLAYER_NOT_REGISTER));
-                        } else if (args.length <= 0) {
-                                sender.sendMessage(TextComponent.fromLegacyText(Msg.ERROR.toString() + Msg.LOGIN_HELP));
-                        } else {
-                                try {
-                                        ProxiedPlayer player = (ProxiedPlayer) sender;
-                                        byte[] passBytes = args[0].getBytes();
-                                        MessageDigest algorithm = MessageDigest.getInstance("SHA-256");
-                                        algorithm.reset();
-                                        algorithm.update(passBytes);
-                                        MessageDigest md = MessageDigest.getInstance("SHA-256");
-                                        byte[] messageDigest = md.digest(passBytes);
-                                        BigInteger number = new BigInteger(1, messageDigest);
-                                        String code = number.toString(16);
-                                        System.out.println(
-                                                code + ">" + Main.getManageCache().getPlayerCache(sender.getName())
-                                                        .getPass());
-                                        if (code.equals(Main.getManageCache().getPlayerCache(sender.getName())
-                                                .getPass())) {
-                                                sender.sendMessage(TextComponent.fromLegacyText(
-                                                        Msg.PREFIX.toString() + Msg.LOGIN_RIGHT_PASSWORD));
-                                                ServerInfo target = ProxyServer.getInstance()
-                                                        .getServerInfo(
-                                                                Main.getConfig().getString("Settings.mainServer"));
-                                                player.connect(target);
-                                        } else {
-                                                sender.sendMessage(TextComponent
-                                                        .fromLegacyText(Msg.ERROR.toString() + Msg.WRONG_PASSWORD));
-                                                player.disconnect(
-                                                        TextComponent.fromLegacyText(Msg.WRONG_PASSWORD.toString()));
+                        PlayerCache playerCache = Main.getManageCache().getPlayerCache(sender.getName());
+                        if (!playerCache.isLogged()) {
+                                if (playerCache.getPass() == null) {
+                                        sender.sendMessage(
+                                                TextComponent.fromLegacyText(
+                                                        Msg.ERROR.toString() + Msg.PLAYER_NOT_REGISTER));
+                                } else if (args.length <= 0) {
+                                        sender.sendMessage(
+                                                TextComponent.fromLegacyText(Msg.ERROR.toString() + Msg.LOGIN_HELP));
+                                } else {
+                                        try {
+                                                ProxiedPlayer player = (ProxiedPlayer) sender;
+                                                byte[] passBytes = args[0].getBytes();
+                                                MessageDigest algorithm = MessageDigest.getInstance("SHA-256");
+                                                algorithm.reset();
+                                                algorithm.update(passBytes);
+                                                MessageDigest md = MessageDigest.getInstance("SHA-256");
+                                                byte[] messageDigest = md.digest(passBytes);
+                                                BigInteger number = new BigInteger(1, messageDigest);
+                                                String code = number.toString(16);
+                                                if (code.equals(playerCache
+                                                        .getPass())) {
+                                                        sender.sendMessage(TextComponent.fromLegacyText(
+                                                                Msg.PREFIX.toString() + Msg.LOGIN_RIGHT_PASSWORD));
+                                                        ServerInfo target = ProxyServer.getInstance()
+                                                                .getServerInfo(
+                                                                        Main.getConfig()
+                                                                                .getString("Settings.mainServer"));
+                                                        player.connect(target);
+                                                        playerCache.setLogged(true);
+                                                } else {
+                                                        sender.sendMessage(TextComponent
+                                                                .fromLegacyText(
+                                                                        Msg.ERROR.toString() + Msg.WRONG_PASSWORD));
+                                                        player.disconnect(
+                                                                TextComponent
+                                                                        .fromLegacyText(Msg.WRONG_PASSWORD.toString()));
+                                                }
+                                        } catch (NoSuchAlgorithmException e) {
+                                                throw new Error("invalid JRE: have not 'MD5' impl.", e);
                                         }
-                                } catch (NoSuchAlgorithmException e) {
-                                        throw new Error("invalid JRE: have not 'MD5' impl.", e);
                                 }
                         }
                 }

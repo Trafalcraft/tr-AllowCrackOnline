@@ -46,7 +46,7 @@ public class DatabaseManager {
 
         private Connection runConnection() {
                 try {
-                        return DriverManager.getConnection(dsn, user, pass);
+                        return DriverManager.getConnection(dsn + "&useSSL=false", user, pass);
                 } catch (SQLException e) {
                         plugin.getLogger()
                                 .severe("Unable to connect to MySQL database.");

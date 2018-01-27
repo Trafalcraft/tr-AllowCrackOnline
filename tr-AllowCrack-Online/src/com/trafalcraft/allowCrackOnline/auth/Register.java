@@ -1,6 +1,7 @@
 package com.trafalcraft.allowCrackOnline.auth;
 
 import com.trafalcraft.allowCrackOnline.Main;
+import com.trafalcraft.allowCrackOnline.cache.PlayerCache;
 import com.trafalcraft.allowCrackOnline.util.Msg;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -19,7 +20,8 @@ public class Register extends Command {
         @Override
         public void execute(CommandSender sender, String[] args) {
                 if (Main.getManageCache().contains(sender.getName())) {
-                        if (Main.getManageCache().getPlayerCache(sender.getName()).getPass() != null) {
+                        PlayerCache playerCache = Main.getManageCache().getPlayerCache(sender.getName());
+                        if (playerCache.getPass() != null) {
                                 sender.sendMessage(TextComponent.fromLegacyText(Msg.ERROR.toString()
                                         + Msg.PLAYER_ALREADY_REGISTER + "\n" + Msg.LOGIN_HELP));
                         } else if (args.length <= 1) {
@@ -38,11 +40,13 @@ public class Register extends Command {
                                         byte[] messageDigest = md.digest(passBytes);
                                         BigInteger number = new BigInteger(1, messageDigest);
                                         String code = number.toString(16);
-                                        Main.getManageCache().getPlayerCache(sender.getName()).setPass(code);
-                                        //main.saveConfig();
+                                        playerCache.setPass(code);
                                         sender.sendMessage(TextComponent
-                                                .fromLegacyText(Msg.PREFIX.toString() + Msg.REGISTER_SUCCESS
-                                                        + Msg.LOGIN_HELP));
+                                                .fromLegacyText(Msg.PREFIX.toString() + Msg.REGISTER_SUCCESS));
+                                        if (!playerCache.isLogged()) {
+                                                sender.sendMessage(TextComponent
+                                                        .fromLegacyText(Msg.LOGIN_HELP.toString()));
+                                        }
                                 } catch (NoSuchAlgorithmException e) {
                                         throw new Error("invalid JRE: have not 'MD5' impl.", e);
                                 }

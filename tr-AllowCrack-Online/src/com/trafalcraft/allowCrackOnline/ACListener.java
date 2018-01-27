@@ -1,6 +1,8 @@
 package com.trafalcraft.allowCrackOnline;
 
+import com.trafalcraft.allowCrackOnline.cache.PlayerCache;
 import com.trafalcraft.allowCrackOnline.util.Msg;
+import com.trafalcraft.allowCrackOnline.util.PingServers;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.chat.TextComponent;
@@ -53,8 +55,20 @@ public class ACListener implements Listener {
 
                         return;
                 }
+
                 if (Main.getManageCache().contains(e.getConnection().getName())) {
+                        ServerInfo target = ProxyServer.getInstance()
+                                .getServerInfo(Main.getConfig().getString("Settings.authServer"));
+
                         InitialHandler handler = (InitialHandler) e.getConnection();
+
+                        if (target == null) {
+                                e.setCancelled(true);
+                                e.setCancelReason(
+                                        TextComponent.fromLegacyText(Msg.AUTH_SERVER_DOWN.toString()));
+                                return;
+
+                        }
 
                         this.main.getLogger().info("\u001B[31m" + Msg.SUCCESSFUL_CONNECTION.toString()
                                 .replace("$player", e.getConnection().getName()) + "\u001B[0m");
@@ -62,38 +76,54 @@ public class ACListener implements Listener {
                         handler.setOnlineMode(false);
                 }
 
+
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onLogin(ServerConnectEvent e) {
-                ProxiedPlayer player = e.getPlayer();
+                if (e.getPlayer() != null) {
+                        ProxiedPlayer player = e.getPlayer();
 
-                if (Main.getManageCache().contains(player.getName())) {
-                        //TODO add error if bad authServer
-                        if (player.getServer() == null) {
-                                ServerInfo target2 = ProxyServer.getInstance()
-                                        .getServerInfo(Main.getConfig().getString("Settings.authServer"));
-                                Main.getInstance().getLogger().info(Main.getConfig().getString("Settings.authServer"));
-                                e.setTarget(target2);
+                        if (Main.getManageCache().contains(player.getName())) {
+                                if (player.getServer() == null) {
+                                        ServerInfo target = ProxyServer.getInstance()
+                                                .getServerInfo(Main.getConfig().getString("Settings.authServer"));
+                                        e.setTarget(target);
+                                        PingServers server_down = new PingServers();
+                                        try {
+                                                synchronized (server_down) {
+                                                        target.ping(server_down);
+                                                        server_down.wait();
+                                                        boolean serverIsOnline = server_down.serverIsOnline();
+                                                        if (!serverIsOnline) {
+                                                                player.disconnect(TextComponent
+                                                                        .fromLegacyText(
+                                                                                Msg.AUTH_SERVER_DOWN.toString()));
+                                                        }
+                                                }
+                                        } catch (InterruptedException e1) {
+                                                e1.printStackTrace();
+                                        }
+                                }
+                                if (Main.getManageCache().getPlayerCache(player.getName()).getPass() != null) {
+                                        player.sendMessage(
+                                                TextComponent.fromLegacyText(Msg.PREFIX.toString() + Msg.LOGIN_HELP));
+                                } else {
+                                        player.sendMessage(
+                                                TextComponent
+                                                        .fromLegacyText(Msg.PREFIX.toString() + Msg.REGISTER_HELP));
+                                }
                         }
-                }
-                if (Main.getManageCache().getPlayerCache(player.getName()).getPass() != null) {
-                        player.sendMessage(TextComponent.fromLegacyText(Msg.PREFIX.toString() + Msg.LOGIN_HELP));
-                } else {
-                        player.sendMessage(TextComponent.fromLegacyText(Msg.PREFIX.toString() + Msg.REGISTER_HELP));
                 }
         }
 
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onPlayerLeave(PlayerDisconnectEvent pde) {
                 final ProxiedPlayer player = pde.getPlayer();
-                ServerInfo target = ProxyServer.getInstance()
-                        .getServerInfo(Main.getConfig().getString("Settings.mainServer"));
-                player.setReconnectServer(target);
-                Main.getManageCache().getPlayerCache(player.getName())
-                        .setLastIP(player.getAddress().getAddress().toString());
                 if (Main.getManageCache().contains(player.getName())) {
-                        target = ProxyServer.getInstance().getServerInfo("Settings.authServer");
+                        Main.getManageCache().getPlayerCache(player.getName())
+                                .setLastIP(player.getAddress().getAddress().toString());
+                        ServerInfo target = ProxyServer.getInstance().getServerInfo("Settings.authServer");
                         player.setReconnectServer(target);
                         Main.getInstance().getProxy().getScheduler().runAsync(Main.getPlugin(), () -> {
                                 try {
@@ -138,16 +168,27 @@ public class ACListener implements Listener {
                 return (username != null) && (this.pat.matcher(username).matches());
         }
 
-        //TODO add check if player is logged
         @EventHandler(priority = EventPriority.HIGHEST)
         public void onChatEvent(ChatEvent e) {
                 if (e.getSender() instanceof ProxiedPlayer) {
                         ProxiedPlayer player = (ProxiedPlayer) e.getSender();
-                        if (Main.getManageCache().getPlayerCache(player.getName()).getPass() == null) {
-                                if (!e.getMessage().startsWith("/register")) {
-                                        player.sendMessage(TextComponent
-                                                .fromLegacyText(Msg.PREFIX.toString() + Msg.REGISTER_HELP));
-                                        e.setCancelled(true);
+                        PlayerCache playerCache = Main.getManageCache().getPlayerCache(player.getName());
+                        if (playerCache != null) {
+                                if (playerCache.getPass() == null
+                                        || !playerCache.isLogged()) {
+                                        if ((!e.getMessage().startsWith("/register")) && (!e.getMessage()
+                                                .startsWith("/login"))) {
+                                                if (playerCache.getPass() == null) {
+                                                        player.sendMessage(TextComponent
+                                                                .fromLegacyText(
+                                                                        Msg.PREFIX.toString() + Msg.REGISTER_HELP));
+                                                } else {
+                                                        player.sendMessage(TextComponent
+                                                                .fromLegacyText(
+                                                                        Msg.PREFIX.toString() + Msg.LOGIN_HELP));
+                                                }
+                                                e.setCancelled(true);
+                                        }
                                 }
                         }
                 }

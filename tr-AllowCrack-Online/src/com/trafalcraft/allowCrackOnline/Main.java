@@ -27,20 +27,13 @@ public class Main extends Plugin {
         private static Configuration config;
         private static Plugin plugin;
         private static DatabaseManager manager;
-        private static ManageCache mc;
+        private static ManageCache manageCachec;
         private boolean disabled = false;
 
         public void onEnable() {
                 instance = this;
                 plugin = this;
-                mc = new ManageCache();
-                //initialise les Listener+command
-                getProxy().getPluginManager().registerCommand(this, new ACCommand(this));
-                getProxy().getPluginManager().registerCommand(this, new Register(this));
-                getProxy().getPluginManager().registerCommand(this, new Login(this));
-                getProxy().getPluginManager().registerCommand(this, new ChangeMdp(this));
-                getProxy().getPluginManager().registerListener(this, new ACListener(this
-                        , Msg.NOT_ALLOWED_CRACKED_USER.toString()));
+                manageCachec = new ManageCache();
 
                 // loadConfig config
                 if (!getDataFolder().exists())
@@ -88,9 +81,9 @@ public class Main extends Plugin {
                                 if (rs.getInt(1) > 0) {
                                         for (int i = 0; i < rs.getInt(1); i++) {
                                                 rs2.next();
-                                                mc.addPlayerCache(rs2.getString(1), rs2.getString(2), rs2.getString(3),
+                                                manageCachec.addPlayerCache(rs2.getString(1), rs2.getString(2),
+                                                        rs2.getString(3),
                                                         rs2.getString(4));
-                                                System.out.println(rs2.getString(2) + rs2.getString(1));
                                         }
                                 }
                 } catch (SQLException e) {
@@ -98,6 +91,14 @@ public class Main extends Plugin {
                         e.printStackTrace();
                         return;
                 }
+
+                //initialise les Listener+command
+                getProxy().getPluginManager().registerCommand(this, new ACCommand(this));
+                getProxy().getPluginManager().registerCommand(this, new Register(this));
+                getProxy().getPluginManager().registerCommand(this, new Login(this));
+                getProxy().getPluginManager().registerCommand(this, new ChangeMdp(this));
+                getProxy().getPluginManager().registerListener(this, new ACListener(this
+                        , Msg.NOT_ALLOWED_CRACKED_USER.toString()));
                 getLogger().info("loaded");
 
         }
@@ -157,6 +158,6 @@ public class Main extends Plugin {
         }
 
         public static ManageCache getManageCache() {
-                return mc;
+                return manageCachec;
         }
 }

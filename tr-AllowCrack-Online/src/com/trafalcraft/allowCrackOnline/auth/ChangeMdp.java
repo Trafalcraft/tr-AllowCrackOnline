@@ -13,7 +13,7 @@ import java.security.NoSuchAlgorithmException;
 public class ChangeMdp extends Command {
 
         public ChangeMdp(Main main) {
-                super("AllowCrack", "", "changemdp");
+                super("AllowCrack", "", "changemdp", "changePassword");
         }
 
         @Override

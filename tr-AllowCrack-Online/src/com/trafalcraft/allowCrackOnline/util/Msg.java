@@ -17,7 +17,6 @@ public enum Msg {
 
         WRONG_PASSWORD("Wrong password"),
         PLAYER_NOT_REGISTER("You are not register"),
-        //TODO add entry in config file
         PLAYER_ALREADY_REGISTER("You are already register"),
         REGISTER_HELP("Do /register <password> <password>"),
         REGISTER_PASSWORD_NOT_MATCH("The password not match"),
@@ -35,7 +34,8 @@ public enum Msg {
 
         TOO_LONG_PASSWORD("$player have a too long name"),
         INVALID_CHARACTER("$player contain an invalid character"),
-        SUCCESSFUL_CONNECTION("The player $player is connected in cracked version");
+        SUCCESSFUL_CONNECTION("The player $player is connected in cracked version"),
+        AUTH_SERVER_DOWN("The authentificator server is down.\n Please tell server administrator");
 
         private String value;
 
@@ -79,6 +79,7 @@ public enum Msg {
 
                 Msg.WRONG_PASSWORD.replaceBy("msg.userCommands.wrongPassword");
                 Msg.PLAYER_NOT_REGISTER.replaceBy("msg.userCommands.playerNotRegister");
+                Msg.PLAYER_ALREADY_REGISTER.replaceBy("msg.userCommands.playerAlreadyRegister");
                 Msg.REGISTER_HELP.replaceBy("msg.userCommands.registerHelp");
                 Msg.REGISTER_PASSWORD_NOT_MATCH.replaceBy("msg.userCommands.registerPasswordNotMatch");
                 Msg.REGISTER_SUCCESS.replaceBy("msg.userCommands.registerSuccess");

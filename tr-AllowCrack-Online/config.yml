@@ -22,6 +22,7 @@ msg:
     pluginDisableKickMsg: "You have been disconnected \n Proxy restarting"
   userCommands:
     wrongPassword: "Wrong password"
+    playerAlreadyRegister: "You are already register"
     playerNotRegister: "You are not register"
     registerHelp: "Do /register <password> <password>"
     registerPasswordNotMatch: "The password not match"

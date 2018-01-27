@@ -6,13 +6,14 @@ public class PlayerCache {
         private String pass;
         private String lastIP;
         private String lastAuth;
+        private boolean logged;
 
-        //TODO add playerIsLogged field
         public PlayerCache(String name, String pass, String lastIP, String lastAuth) {
                 this.name = name;
                 this.pass = pass;
                 this.lastIP = lastIP;
                 this.lastAuth = lastAuth;
+                this.logged = false;
         }
 
         public String getName() {
@@ -45,6 +46,14 @@ public class PlayerCache {
 
         public void setLastAuth(String lastAuth) {
                 this.lastAuth = lastAuth;
+        }
+
+        public void setLogged(boolean isLogged) {
+                logged = isLogged;
+        }
+
+        public boolean isLogged() {
+                return logged;
         }
 
 }

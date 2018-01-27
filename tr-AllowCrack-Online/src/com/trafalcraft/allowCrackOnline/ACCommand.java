@@ -84,8 +84,8 @@ public class ACCommand extends Command {
 
                                         sender.sendMessage(
                                                 TextComponent.fromLegacyText(ChatColor.GOLD + Msg.PREFIX.toString()
-                                                        + Msg.PLAYER_REMOVED_FROM_ALLOWED_CRACKED_LIST).toString()
-                                                        .replace("$player", name2));
+                                                        + Msg.PLAYER_REMOVED_FROM_ALLOWED_CRACKED_LIST.toString()
+                                                        .replace("$player", name2)));
                                         break;
                                 case "list":
                                         StringBuilder msg = new StringBuilder(
